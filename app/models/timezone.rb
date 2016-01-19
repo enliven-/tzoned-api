@@ -1,7 +1,7 @@
 class Timezone < ActiveRecord::Base
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validates :abbr, presence: true, uniqueness: { case_sensitive: false }
-  validates :gmt_difference, presence: true
+  validates :gmt_difference, presence: true, numericality: true
 
 
   belongs_to :user

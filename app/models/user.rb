@@ -7,6 +7,9 @@ class User < ActiveRecord::Base
   validates :auth_token, uniqueness: true
   
   before_create :generate_auth_token!
+
+  has_many :timezones
+  
   
   def generate_auth_token!
     begin
