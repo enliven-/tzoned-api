@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 
 gem 'rails'
 gem 'rails-api', '0.4.0'
+gem 'devise'
 
 group :production do
   gem 'pg'
