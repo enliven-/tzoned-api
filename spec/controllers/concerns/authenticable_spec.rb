@@ -45,4 +45,31 @@ RSpec.describe Authenticable do
 
     it {  should respond_with 401 }
   end
+
+
+
+  describe '#user_signed_in?' do
+    context 'when there is a user on session' do
+      before do
+        @user = FactoryGirl.create :user
+        allow(authentication).to receive(:current_user) { @user }
+      end
+
+      it 'returns true for user_signed_in?' do
+        expect(authentication.user_signed_in?).to be true
+      end
+    end
+
+    context 'when there is no user on session' do
+      before do
+        @user = FactoryGirl.create :user
+        allow(authentication).to receive(:current_user) { nil }
+      end
+
+      it 'returns false for user_signed_in?' do
+        expect(authentication.user_signed_in?).to be false
+      end
+    end
+  end
+
 end 
