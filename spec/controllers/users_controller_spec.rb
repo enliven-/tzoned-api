@@ -66,21 +66,24 @@ RSpec.describe UsersController, type: :controller do
     context 'when is successfully updated' do
       before(:each) do
         @user = FactoryGirl.create :user
+        request.headers['Authorization'] =  @user.auth_token
         patch :update, { id: @user.id,
                          user: { email: 'newmail@example.com' } }, format: :json
       end
 
       it 'renders the json representation for the updated user' do
         user_response = JSON.parse(response.body, symbolize_names: true)
+        
         expect(user_response[:email]).to eql 'newmail@example.com'
       end
 
       it { should respond_with 200 }
     end
 
-    context 'when is not created' do
+    context 'when is not updated' do
       before(:each) do
         @user = FactoryGirl.create :user
+        request.headers['Authorization'] =  @user.auth_token
         patch :update, { id: @user.id,
                          user: { email: 'bademail.com' } }, format: :json
       end
@@ -92,6 +95,7 @@ RSpec.describe UsersController, type: :controller do
 
       it 'renders the json errors on whye the user could not be created' do
         user_response = JSON.parse(response.body, symbolize_names: true)
+
         expect(user_response[:errors][:email]).to include 'is invalid'
       end
 
@@ -104,6 +108,7 @@ RSpec.describe UsersController, type: :controller do
   describe 'DELETE #destroy' do
     before(:each) do
       @user = FactoryGirl.create :user
+      request.headers['Authorization'] =  @user.auth_token
       delete :destroy, { id: @user.id }, format: :json
     end
 
