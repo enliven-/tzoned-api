@@ -7,7 +7,6 @@ class SessionsController < ApplicationController
     user          = user_email.present? && User.find_by(email: user_email)
 
     if user.valid_password? user_password
-      sign_in user
       user.generate_auth_token!
       user.save
       render json: user, status: 200
