@@ -1,6 +1,7 @@
 class TimezonesController < ApplicationController
 
   before_action :authenticate_with_token!
+  load_and_authorize_resource
 
 
   def index

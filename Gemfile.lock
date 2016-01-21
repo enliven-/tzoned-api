@@ -41,6 +41,7 @@ GEM
     arel (6.0.3)
     bcrypt (3.1.10)
     builder (3.2.2)
+    cancancan (1.13.1)
     concurrent-ruby (1.0.0)
     devise (3.5.4)
       bcrypt (~> 3.0)
@@ -147,6 +148,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers
+  cancancan (~> 1.10)
   devise
   factory_girl_rails
   faker

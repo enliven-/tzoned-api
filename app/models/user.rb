@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
 
   has_many :timezones
   
+  enum role: { admin: 2, manager: 1, regular: 0 }
   
   def generate_auth_token!
     begin

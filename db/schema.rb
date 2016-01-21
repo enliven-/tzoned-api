@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160119180654) do
+ActiveRecord::Schema.define(version: 20160121221554) do
 
   create_table "timezones", force: :cascade do |t|
     t.string   "name"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20160119180654) do
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
     t.string   "auth_token",             default: ""
+    t.integer  "role",                   default: 0
   end
 
   add_index "users", ["auth_token"], name: "index_users_on_auth_token", unique: true

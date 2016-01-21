@@ -1,9 +1,15 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show]
   before_action :authenticate_with_token!, only: [:update, :destroy]
+  load_and_authorize_resource
+
 
   def show
     render json: @user
+  end
+
+  def index
+    render json: User.all
   end
 
 
@@ -46,6 +52,6 @@ class UsersController < ApplicationController
     end
 
     def user_params
-      params.require(:user).permit(:email, :password, :password_confirmation)
+      params.require(:user).permit(:email, :password, :password_confirmation, :role)
     end
 end
