@@ -4,6 +4,8 @@ source 'https://rubygems.org'
 gem 'rails'
 gem 'rails-api', '0.4.0'
 gem 'devise'
+gem 'active_model_serializers'
+gem 'rack-cors', :require => 'rack/cors'
 
 group :production do
   gem 'pg'
