@@ -8,4 +8,4 @@
 
 3.times { FactoryGirl.create(:user) }
 
-FactoryGirl.create(:timezone)
+5.times { FactoryGirl.create(:timezone) }
