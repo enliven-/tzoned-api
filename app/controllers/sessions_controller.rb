@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
     if user.valid_password? user_password
       user.generate_auth_token!
       user.save
-      render json: user, status: 200
+      render json: user, show_auth_token: true, status: 200
     else
       render json: { errors: 'Invalid email or password' }, status: 422
     end
