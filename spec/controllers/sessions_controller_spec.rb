@@ -13,15 +13,15 @@ RSpec.describe SessionsController, type: :controller do
     context 'when the credentials are correct' do
 
       before(:each) do
-        credentials = { email: @user.email, password: '12345678' }
-        post :create, { session: credentials }
+        credentials = { email: @user.email, password: 'mypassword' }
+        post :create, { user: credentials }
       end
 
       it 'returns the user record corresponding to the given credentials' do
         @user.reload
         json_response = JSON.parse(response.body, symbolize_names: true)
 
-        expect(json_response[:auth_token]).to eql @user.auth_token
+        expect(json_response[:user][:auth_token]).to eql @user.auth_token
       end
 
       it { should respond_with 200 }
@@ -31,7 +31,7 @@ RSpec.describe SessionsController, type: :controller do
 
       before(:each) do
         credentials = { email: @user.email, password: 'invalidpassword' }
-        post :create, { session: credentials }
+        post :create, { user: credentials }
       end
 
       it 'returns a json with an error' do
@@ -50,8 +50,7 @@ RSpec.describe SessionsController, type: :controller do
 
     before(:each) do
       @user = FactoryGirl.create :user
-      sign_in @user
-      delete :destroy, id: @user.auth_token
+      delete :destroy, { id: @user.auth_token }
     end
 
     it { should respond_with 204 }

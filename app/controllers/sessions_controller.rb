@@ -1,10 +1,10 @@
 class SessionsController < ApplicationController
 
   def create
-    user_password = params[:session][:password]
-    user_email    = params[:session][:email]
+    user_password = params[:user][:password]
+    user_email    = params[:user][:email]
 
-    user          = user_email.present? && User.find_by(email: user_email)
+    user          = user_email.present? && User.find_by(email: user_email) || User.new
 
     if user.valid_password? user_password
       user.generate_auth_token!

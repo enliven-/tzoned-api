@@ -3,6 +3,6 @@ FactoryGirl.define do
     email                 { Faker::Internet.email }
     password              'mypassword'
     password_confirmation 'mypassword'
-    role                  { [0, 1, 2].sample }
+    role                  { [:regular, :manager, :admin].sample }
   end
 end

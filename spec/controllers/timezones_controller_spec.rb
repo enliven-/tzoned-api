@@ -14,7 +14,7 @@ RSpec.describe TimezonesController, type: :controller do
     it 'returns records from the database as json array' do
       json_response = JSON.parse(response.body, symbolize_names: true)
 
-      expect(json_response).to be_a Array
+      expect(json_response[:timezones]).to be_a Array
     end
 
     it { should respond_with 200 }
@@ -33,7 +33,7 @@ RSpec.describe TimezonesController, type: :controller do
     it 'returns the information about timezone as a hash' do
       json_response = JSON.parse(response.body, symbolize_names: true)
 
-      expect(json_response[:name]).to eql @timezone.name
+      expect(json_response[:timezone][:name]).to eql @timezone.name
     end
 
     it { should respond_with 200 }
@@ -53,7 +53,7 @@ RSpec.describe TimezonesController, type: :controller do
       it 'renders the json representation for the timezone record just created' do
         json_response = JSON.parse(response.body, symbolize_names: true)
 
-        expect(json_response[:name]).to eql @timezone_attributes[:name]
+        expect(json_response[:timezone][:name]).to eql @timezone_attributes[:name]
       end
 
       it { should respond_with 201 }
@@ -101,7 +101,7 @@ RSpec.describe TimezonesController, type: :controller do
       it 'renders the json representation for the updated timezone' do
         json_response = JSON.parse(response.body, symbolize_names: true)
 
-        expect(json_response[:name]).to eql 'CT'
+        expect(json_response[:timezone][:name]).to eql 'CT'
       end
 
       it { should respond_with 200 }
