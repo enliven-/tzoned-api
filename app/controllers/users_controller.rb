@@ -6,7 +6,12 @@ class UsersController < ApplicationController
 
 
   def show
-    render json: @user
+    timezones = if params[:q].present?
+                  Timezone.load_for(@user).filter(params[:q][:term])
+                else
+                  @user.timezones
+                end
+    render json: timezones
   end
 
   def index

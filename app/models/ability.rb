@@ -15,6 +15,7 @@ class Ability
       can :crud, User, :id => user.id
       cannot :index, User
       can :crud, Timezone, :user_id => user.id
+      can :search, Timezone
     end
   end
 end

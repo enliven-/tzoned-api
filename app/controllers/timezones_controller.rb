@@ -4,8 +4,20 @@ class TimezonesController < ApplicationController
   load_and_authorize_resource :user
   load_and_authorize_resource :through => :user
   
+
+  
   def index
-    render json: @user.timezones
+    timezones = if @user == current_user && current_user.admin?
+                  Timezone.all
+                else
+                  @user.timezones
+                end
+
+    if params[:q].present?
+      render json: timezones.filter(params[:q][:term])
+    else
+      render json: timezones
+    end
   end
 
 
@@ -41,12 +53,14 @@ class TimezonesController < ApplicationController
     head 204
   end
 
-  def set_user
-    @user = User.find(params[:user_id])
-  end
-
 
   private
+
+    def set_user
+      @user = User.find(params[:user_id])
+    end
+
+
     def timezone_params
       params.require(:timezone).permit(:name, :abbr, :gmt_difference)
     end

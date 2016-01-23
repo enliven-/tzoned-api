@@ -3,8 +3,9 @@ class Timezone < ActiveRecord::Base
   validates :abbr, presence: true, uniqueness: { case_sensitive: false }
   validates :gmt_difference, presence: true, numericality: true
 
-
   belongs_to :user
   has_one    :city
+
+  scope :filter, -> (term) { where("lower(name) like ?", "%#{term.downcase}%")}
 
 end
