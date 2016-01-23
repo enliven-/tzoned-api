@@ -5,7 +5,7 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'GET #show' do
     before(:each) do
-      @user = FactoryGirl.create :user, role: 2
+      @user = FactoryGirl.create :user, role: :admin
       request.headers['Authorization'] =  @user.auth_token
 
       get :show, id: @user.id, format: :json
@@ -68,7 +68,7 @@ RSpec.describe UsersController, type: :controller do
 
     context 'when is successfully updated' do
       before(:each) do
-        @user = FactoryGirl.create :user, role: 2
+        @user = FactoryGirl.create :user, role: :admin
         request.headers['Authorization'] =  @user.auth_token
         patch :update, { id: @user.id,
                          user: { email: 'newmail@example.com' } }, format: :json
@@ -85,7 +85,7 @@ RSpec.describe UsersController, type: :controller do
 
     context 'when is not updated' do
       before(:each) do
-        @user = FactoryGirl.create :user, role: 2
+        @user = FactoryGirl.create :user, role: :admin
         request.headers['Authorization'] =  @user.auth_token
         patch :update, { id: @user.id,
                          user: { email: 'bademail.com' } }, format: :json
@@ -110,7 +110,7 @@ RSpec.describe UsersController, type: :controller do
 
   describe 'DELETE #destroy' do
     before(:each) do
-      @user = FactoryGirl.create :user, role: 2
+      @user = FactoryGirl.create :user, role: :admin
       request.headers['Authorization'] =  @user.auth_token
       delete :destroy, { id: @user.id }, format: :json
     end

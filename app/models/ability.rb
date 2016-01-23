@@ -11,6 +11,7 @@ class Ability
     elsif user.manager?
       can :manage, User
     elsif user.regular?
+      can :crud, User, :id => user.id
       can :crud, Timezone, :user_id => user.id
     end
   end

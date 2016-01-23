@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show]
+  before_action :set_user, only: [:show, :update, :destroy]
   before_action :authenticate_with_token!, only: [:update, :destroy]
   load_and_authorize_resource
   skip_authorize_resource :only => :create
@@ -26,22 +26,20 @@ class UsersController < ApplicationController
 
 
   def update
-    user = current_user
 
-    if user.update(user_params)
-      render json: user, status: 200
+    if @user.update(user_params)
+      render json: @user, status: 200
     else
-      render json: { errors: user.errors }, status: 422
+      render json: { errors: @user.errors }, status: 422
     end
   end
 
 
   def destroy
-    user = current_user
-    if user.destroy
+    if @user.destroy
       head 204
     else
-      render json: { errors: user.errors }, status: 422
+      render json: { errors: @user.errors }, status: 422
     end
   end
 
