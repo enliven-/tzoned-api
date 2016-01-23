@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   
   enum role: { admin: 2, manager: 1, regular: 0 }
 
-  # scope :all_except, ->(user) { where.not(id: user) }
+  scope :all_except, ->(user) { where.not(id: user) }
   
   def generate_auth_token!
     begin

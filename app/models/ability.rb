@@ -10,6 +10,7 @@ class Ability
       can :crud, :all
     elsif user.manager?
       can :manage, User
+      cannot :manage, Timezone
     elsif user.regular?
       can :crud, User, :id => user.id
       cannot :index, User
