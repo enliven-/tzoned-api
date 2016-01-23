@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :update, :destroy]
-  before_action :authenticate_with_token!, only: [:update, :destroy]
+  before_action :authenticate_with_token!, except: [:create]
   load_and_authorize_resource
   skip_authorize_resource :only => :create
 
