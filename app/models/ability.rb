@@ -9,8 +9,7 @@ class Ability
     if user.admin?
       can :crud, :all
     elsif user.manager?
-      can :crud, User
-      can :crud, Timezone, :user_id => user.id
+      can :manage, User
     elsif user.regular?
       can :crud, Timezone, :user_id => user.id
     end

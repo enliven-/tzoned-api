@@ -10,7 +10,8 @@ class UsersController < ApplicationController
   end
 
   def index
-    render json: User.all
+    users = User.all_except(current_user)
+    render json: users
   end
 
 

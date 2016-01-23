@@ -5,7 +5,7 @@ RSpec.describe TimezonesController, type: :controller do
 
   describe 'GET #index' do
     before(:each) do
-      user = FactoryGirl.create(:user)
+      user = FactoryGirl.create(:user, role: :regular)
       request.headers['Authorization'] =  user.auth_token
       FactoryGirl.create :timezone, user: user
       get :index, { user_id: user.id }
@@ -23,7 +23,7 @@ RSpec.describe TimezonesController, type: :controller do
 
   describe 'GET #show' do
     before(:each) do
-      user = FactoryGirl.create(:user)
+      user = FactoryGirl.create(:user, role: :regular)
       @timezone = FactoryGirl.create(:timezone, user: user)
       request.headers['Authorization'] =  user.auth_token
 
@@ -44,7 +44,7 @@ RSpec.describe TimezonesController, type: :controller do
   describe 'POST #create' do
     context 'when is successfully created' do
       before(:each) do
-        user = FactoryGirl.create(:user)
+        user = FactoryGirl.create(:user, role: :regular)
         @timezone_attributes = FactoryGirl.attributes_for :timezone
         request.headers['Authorization'] =  user.auth_token
         post :create, { user_id: user.id, timezone: @timezone_attributes }
@@ -61,7 +61,7 @@ RSpec.describe TimezonesController, type: :controller do
 
     context 'when is not created' do
       before(:each) do
-        user = FactoryGirl.create :user
+        user = FactoryGirl.create :user, role: :regular
         @invalid_timezone_attributes = { gmt_difference: 9000 } # name not present
         request.headers['Authorization'] =  user.auth_token
         post :create, { user_id: user.id, timezone: @invalid_timezone_attributes }
@@ -87,7 +87,7 @@ RSpec.describe TimezonesController, type: :controller do
 
   describe 'PUT/PATCH #update' do
     before(:each) do
-      @user = FactoryGirl.create :user
+      @user = FactoryGirl.create :user, role: :regular
       request.headers['Authorization'] =  @user.auth_token
       @timezone = FactoryGirl.create :timezone, user: @user
     end
@@ -133,7 +133,7 @@ RSpec.describe TimezonesController, type: :controller do
 
   describe 'DELETE #destroy' do
     before(:each) do
-      @user = FactoryGirl.create :user
+      @user = FactoryGirl.create :user, role: :regular
       request.headers['Authorization'] =  @user.auth_token
       @timezone = FactoryGirl.create :timezone, user: @user
       delete :destroy, { user_id: @user.id, id: @timezone.id }
