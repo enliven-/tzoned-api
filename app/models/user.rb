@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   validates :auth_token, uniqueness: true
+
+  validates :role, presence: true
   
   before_create :generate_auth_token!
 

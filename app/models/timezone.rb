@@ -8,4 +8,7 @@ class Timezone < ActiveRecord::Base
 
   scope :filter, -> (term) { where("lower(name) like ?", "%#{term.downcase}%")}
 
+  def self.load_for(user)
+    user.admin? ? Timezone.all : user.timezones
+  end
 end

@@ -1,17 +1,13 @@
 class TimezonesController < ApplicationController
   before_action :set_user
   before_action :authenticate_with_token!
-  load_and_authorize_resource :user
-  load_and_authorize_resource :through => :user
+  authorize_resource :user
+  authorize_resource :through => :user
   
 
   
   def index
-    timezones = if @user == current_user && current_user.admin?
-                  Timezone.all
-                else
-                  @user.timezones
-                end
+    timezones = Timezone.load_for(current_user)
 
     if params[:q].present?
       render json: timezones.filter(params[:q][:term])
@@ -22,7 +18,7 @@ class TimezonesController < ApplicationController
 
 
   def show
-    render json: @user.timezones.find(params[:id])
+    render json: Timezone.load_for(current_user).find(params[:id])
   end
 
 
@@ -38,7 +34,7 @@ class TimezonesController < ApplicationController
 
 
   def update
-    timezone = @user.timezones.find(params[:id])
+    timezone = Timezone.load_for(current_user).find(params[:id])
     if timezone.update(timezone_params)
       render json: timezone, status: 200
     else
@@ -48,7 +44,7 @@ class TimezonesController < ApplicationController
 
 
   def destroy
-    timezone = @user.timezones.find(params[:id])
+    timezone = Timezone.load_for(current_user).find(params[:id])
     timezone.destroy
     head 204
   end
