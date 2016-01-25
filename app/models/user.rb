@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   
   before_create :generate_auth_token!
 
-  has_many :timezones
+  has_many :timezones, dependent: :destroy
   
   enum role: { admin: 2, manager: 1, regular: 0 }
 
