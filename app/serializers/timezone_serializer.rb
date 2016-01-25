@@ -1,5 +1,5 @@
 class TimezoneSerializer < ActiveModel::Serializer
-  attributes :id, :name, :abbr, :gmt_difference
+  attributes :id, :name, :abbr, :city, :gmt_difference
 
   def attributes
     data = super
