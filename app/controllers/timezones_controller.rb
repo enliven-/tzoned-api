@@ -58,7 +58,7 @@ class TimezonesController < ApplicationController
 
 
     def timezone_params
-      params.require(:timezone).permit(:name, :abbr, :gmt_difference)
+      params.require(:timezone).permit(:name, :abbr, :gmt_difference, :city)
     end
 
 end
