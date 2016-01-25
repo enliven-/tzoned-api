@@ -1,122 +1,132 @@
 require 'rails_helper'
 
+
 RSpec.describe UsersController, type: :controller do
+
+  # This should return the minimal set of attributes required to create a valid
+  # User. As you add validations to User, be sure to
+  # adjust the attributes here as well.
+
+  let(:user)    { FactoryGirl.create(:user) }
+  let(:manager) { FactoryGirl.create(:manager) }
+  let(:admin)   { FactoryGirl.create(:admin) }
+  
+  let(:valid_attributes)   { FactoryGirl.attributes_for(:user) }
+  let(:invalid_attributes) { FactoryGirl.attributes_for(:invalid_user) }
+
+  let(:valid_session) { {} }
+
+  def set_http_header!(user)
+    request.headers['Authorization'] = user.auth_token
+  end
+
+  def json_response
+    JSON.parse(response.body, symbolize_names: true)
+  end
+
+
+
+
+  describe 'GET #index' do
+    it 'is forbidden for regular user' do
+      set_http_header!(user)
+      get :index, {}, valid_session
+
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it 'is accessible to manager' do
+      set_http_header!(manager)
+      get :index, {}, valid_session
+
+      expect(response).to have_http_status(200)
+    end
+
+    it 'is accessible to admin' do
+      set_http_header!(admin)
+      get :index, {}, valid_session
+
+      expect(response).to have_http_status(200)
+    end
+
+    it 'returns users (except self) as array' do
+      set_http_header!(manager)
+      user  = FactoryGirl.create(:user)
+      admin = FactoryGirl.create(:admin)
+      get :index, {}, valid_session
+      expect(json_response[:users].length).to eq(2)
+    end
+
+  end
+
 
 
   describe 'GET #show' do
-    before(:each) do
-      @user = FactoryGirl.create :user, role: :admin
-      request.headers['Authorization'] =  @user.auth_token
-
-      get :show, id: @user.id, format: :json
-    end
-
-    it 'returns the user as a hash' do
-      user_response = JSON.parse(response.body, symbolize_names: true)
-      expect(user_response[:user][:email]).to eql @user.email
-    end
-
-    it { should respond_with 200 }
-  end
-
-
-
-
-  describe 'POST #create' do
-
-    context 'when is successfully created' do
-      before(:each) do
-        @user_attributes = FactoryGirl.attributes_for(:user)
-        post :create, { user: @user_attributes }, format: :json
-      end
-
-      it 'renders the json representation for the user record just created' do
-        user_response = JSON.parse(response.body, symbolize_names: true)
-        expect(user_response[:user][:email]).to eql @user_attributes[:email]
-      end
-
-      # it { should respond_with 201 }
-    end
-
-    context 'when is not created' do
-      before(:each) do
-        # not including the email
-        @invalid_user_attributes = { password: '12345678',
-                                     password_confirmation: '12345678' }
-        post :create, { user: @invalid_user_attributes }, format: :json
-      end
-
-      it 'renders an errors json' do
-        user_response = JSON.parse(response.body, symbolize_names: true)
-        expect(user_response).to have_key(:errors)
-      end
-
-      it 'renders the json errors on why the user could not be created' do
-        user_response = JSON.parse(response.body, symbolize_names: true)
-
-        expect(user_response[:errors][:email]).to include "can't be blank"
-      end
-
-      it { should respond_with 422 }
+    it 'gets user response as a hash' do
+      set_http_header!(user)
+      get :show, {:id => user.to_param}, valid_session
+      
+      expect(assigns(:user)).to eq(user)
     end
   end
 
+  # describe 'POST #create' do
+  #   context 'with valid params' do
+  #     it 'creates a new User' do
+  #       valid_attributes[:role] = :regular
+  #       expect {
+  #         post :create, {:user => valid_attributes}, valid_session
+  #       }.to change(User, :count).by(1)
+  #     end
+  #   end
+
+  #   context 'with invalid params' do
+  #     it 'assigns a newly created but unsaved user as @user' do
+  #       post :create, {:user => invalid_attributes}, valid_session
+  #       expect(assigns(:user)).to be_a_new(User)
+  #     end
+  #   end
+  # end
+
+  # describe 'PUT #update' do
+  #   context 'with valid params' do
+
+  #     let(:new_attributes) { {email: 'someone@else.com'} }
+
+  #     it 'updates the requested user' do
+  #       put :update, {:id => user.to_param, :user => new_attributes}, valid_session
+  #       user.reload
+  #       skip('Add assertions for updated state')
+  #       expect(user.email).to eq('someone@else.com')
+  #     end
+
+  #     it 'assigns the requested user as @user' do
+  #       put :update, {:id => user.to_param, :user => valid_attributes}, valid_session
+  #       expect(assigns(:user)).to eq(user)
+  #     end
+  #   end
+
+  #   context 'with invalid params' do
+  #     it 'assigns the user as @user' do
+  #       put :update, {:id => user.to_param, :user => invalid_attributes}, valid_session
+  #       expect(assigns(:user)).to eq(user)
+  #     end
+  #   end
+  # end
+
+  # describe 'DELETE #destroy' do
+  #   it 'destroys the requested user' do
+  #     expect {
+  #       delete :destroy, {:id => user.to_param}, valid_session
+  #     }.to change(User, :count).by(-1)
+  #   end
+
+  #   it 'redirects to the users list' do
+  #     delete :destroy, {:id => user.to_param}, valid_session
+  #     expect(response).to redirect_to(users_url)
+  #   end
+  # end
 
 
-
-  describe 'PUT/PATCH #update' do
-
-    context 'when is successfully updated' do
-      before(:each) do
-        @user = FactoryGirl.create :user, role: :admin
-        request.headers['Authorization'] =  @user.auth_token
-        patch :update, { id: @user.id,
-                         user: { email: 'newmail@example.com' } }, format: :json
-      end
-
-      it 'renders the json representation for the updated user' do
-        user_response = JSON.parse(response.body, symbolize_names: true)
-        
-        expect(user_response[:user][:email]).to eql 'newmail@example.com'
-      end
-
-      it { should respond_with 200 }
-    end
-
-    context 'when is not updated' do
-      before(:each) do
-        @user = FactoryGirl.create :user, role: :admin
-        request.headers['Authorization'] =  @user.auth_token
-        patch :update, { id: @user.id,
-                         user: { email: 'bademail.com' } }, format: :json
-      end
-
-      it 'renders an errors json' do
-        user_response = JSON.parse(response.body, symbolize_names: true)
-        expect(user_response).to have_key(:errors)
-      end
-
-      it 'renders the json errors on whye the user could not be created' do
-        user_response = JSON.parse(response.body, symbolize_names: true)
-
-        expect(user_response[:errors][:email]).to include 'is invalid'
-      end
-
-      it { should respond_with 422 }
-    end
-  end
-
-
-
-  describe 'DELETE #destroy' do
-    before(:each) do
-      @user = FactoryGirl.create :user, role: :admin
-      request.headers['Authorization'] =  @user.auth_token
-      delete :destroy, { id: @user.id }, format: :json
-    end
-
-    it { should respond_with 204 }
-
-  end
 
 end
